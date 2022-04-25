@@ -1,0 +1,74 @@
+//ETAPA 1/4*******Configurar Link da Planilha*****
+
+var wbook = SpreadsheetApp.openByUrl('LINK DA PLANILHA');
+
+//ETAPA 2/4*******Configurar nome da Aba que será usada*****
+
+var sheet = wbook.getSheetByName('NOME DA ABA');
+
+
+function doGet(e) {
+
+
+  var action = e.parameter.action;
+
+  if (action == "Read") {
+    return Read(e);
+  }
+
+  else if (action == "Create") {
+    return Create(e);
+  }
+
+  else if (action == "Update") {
+    return Update(e);
+  }
+
+  else if (action == "Delete") {
+    return Delete(e);
+  }
+}
+function Create(e) {
+
+  var json = JSON.stringify(e.parameter);
+  var dados = JSON.parse(json);
+
+  //ETAPA 3/4*******Configurar a sequencia das colunas *****
+
+  sheet.appendRow([dados.nome, dados.telefone, dados.email, dados.salario]);
+
+  return ContentService.createTextOutput([json]).setMimeType(ContentService.MimeType.JSON);
+}
+function Read(e) {
+  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).getValues();
+  
+  
+  var data = [];
+
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var record = {};
+
+    //ETAPA 4/4*****Edite a linha abaixo com os nomes da colunas que deseja*****
+
+    record['Nome'] = row[0];
+    record['Telefone'] = row[1];
+    record['Email'] = row[2];
+    record['Salario'] = row[3];
+    
+
+    data.push(record);
+
+  }
+  var result = JSON.stringify(data);
+
+  return ContentService.createTextOutput(result).setMimeType(ContentService.MimeType.JSON);
+}
+
+function Update(e) {
+  /// Em desenvolvimento
+}
+
+function Delete(e) {
+  /// Em desenvolvimento
+}
